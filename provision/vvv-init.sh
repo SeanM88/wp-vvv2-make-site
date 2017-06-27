@@ -43,9 +43,9 @@ else
     rm -rf ${DOC_ROOT}
     # Clone site_repo into new DOC_ROOT directory
     echo -e "\nCloning ${SITE_REPO} into fresh ${DOC_ROOT}"
-    #git clone ${REPO} ${DOC_ROOT}
+    #git clone ${SITE_REPO} ${DOC_ROOT}
     # No try/catch in bash but close enough
-    (git clone ${REPO} ${DOC_ROOT} && echo "Successfully imported ${REPO}") || echo 'ERROR: Could not clone target URL, check site_repo setting in vvv-custom.yml for any mistakes.'
+    (git clone ${SITE_REPO} ${DOC_ROOT} && echo "Successfully imported ${SITE_REPO}") || echo 'ERROR: Could not clone target URL, check site_repo setting in vvv-custom.yml for any mistakes.'
     # If we have a sql dump file, copy it to the /database/backups directory for import
     if [[ -f ${DB_FILE} ]]; then
       cp ${DB_FILE} "${DB_BACKUPS}/${DB_NAME}.sql"

@@ -9,7 +9,7 @@ server {
 
     set          $upstream {upstream};
 
-    location     ~wp-content/uploads/ \.(jpe?g|png|gif|ico|pdf)$ {
+    location     ~ wp-content/uploads/ \.(jpe?g|png|gif|ico|pdf)$ {
         expires 24h;
         log_not_found off;
         try_files $uri $uri/ @live_proxy;
