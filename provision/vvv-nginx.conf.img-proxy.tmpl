@@ -1,0 +1,24 @@
+server {
+    listen       80;
+    listen       443 ssl;
+    server_name  {{DOMAINS_HERE}};
+    root         {vvv_path_to_site}/public_html;
+
+    error_log    {vvv_path_to_site}/log/error.log;
+    access_log   {vvv_path_to_site}/log/access.log;
+
+    set          $upstream {upstream};
+
+    location     ~wp-content/uploads/ \.(jpe?g|png|gif|ico|pdf)$ {
+        expires 24h;
+        log_not_found off;
+        try_files $uri $uri/ @live_proxy;
+    }
+
+    location @live_proxy {
+        resolver 8.8.8.8;
+        proxy_pass http://{{LIVE_URL}}/$uri;
+    }
+
+    include      /etc/nginx/nginx-wp-common.conf;
+}
