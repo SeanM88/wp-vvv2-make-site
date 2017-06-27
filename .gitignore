@@ -1,0 +1,54 @@
+# --------------------------------------------------------
+# wp-base-vvv-project
+# --------------------------------------------------------
+
+# ignore all files starting with .
+.*
+
+# ignore all files that start with ~
+~*
+
+# ignore OS generated files
+ehthumbs.db
+Thumbs.db
+
+# ignore Editor files
+*.sublime-project
+*.sublime-workspace
+*.komodoproject
+
+# ignore log files and databases
+*.log
+*.sql
+*.sqlite
+
+# ignore compiled files
+*.com
+*.class
+*.dll
+*.exe
+*.o
+*.so
+
+# ignore packaged files
+*.7z
+*.dmg
+*.gz
+*.iso
+*.jar
+*.rar
+*.tar
+*.zip
+
+# .filetype exceptions (i.e. do NOT ignore these)
+!.gitignore
+!.editorconfig
+!readme.md
+
+# ignore actual WordPress site files. These should be tracked in site's own repo (inside public_html).
+/log/
+/provision/vvv-nginx.conf
+/public_html
+
+# include .gitkeep files for tracking empty directories
+!.gitkeep
