@@ -8,6 +8,9 @@ SITE_REPO=$(get_config_value 'site_repo' false)
 SITE_TITLE=$(get_config_value 'site_title' "${VVV_SITE_NAME}")
 DB_NAME=$(get_config_value 'db_name' "${VVV_SITE_NAME}_db")
 DB_NAME=${DB_NAME//[\\\/\.\<\>\:\"\'\|\?\!\*-]/}
+# Place a sql database dump file in a
+DB_FILE="${DOC_ROOT}/db-dumps/${DB_NAME}.sql"
+DB_BACKUPS="/srv/database/backups"
 IMG_PROXY=$(get_config_value 'img_proxy' false)
 WP_VERSION=$(get_config_value 'wp_version' 'latest')
 WP_TYPE=$(get_config_value 'wp_type' 'single')
@@ -30,6 +33,7 @@ touch ${VVV_PATH_TO_SITE}/log/access.log
 if [[ false = "${SITE_REPO}" ]]; then
   if [[ ! -d ${DOC_ROOT} ]]; then
     mkdir -p ${DOC_ROOT}
+    mkdir "${DOC_ROOT}/db-dumps"
   fi
 # If we don't have existing local repo, clone it into DOC_ROOT (/public_html)
 else
@@ -42,6 +46,10 @@ else
     #git clone ${REPO} ${DOC_ROOT}
     # No try/catch in bash but close enough
     (git clone ${REPO} ${DOC_ROOT} && echo "Successfully imported ${REPO}") || echo 'ERROR: Could not clone target URL, check site_repo setting in vvv-custom.yml for any mistakes.'
+    # If we have a sql dump file, copy it to the /database/backups directory for import
+    if [[ -f ${DB_FILE} ]]; then
+      cp ${DB_FILE} "${DB_BACKUPS}/${DB_NAME}.sql"
+    fi
   fi
 fi
 
