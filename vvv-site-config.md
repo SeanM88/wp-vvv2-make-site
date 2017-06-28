@@ -34,7 +34,9 @@ sites:
     custom:
       site_repo: false
       site_title: mycoolsite
+      doc_root_dir: public_html # defaults to 'public_html' but 'htdocs' is also common, no slashes
       db_name: mycoolsite_db
+      db_file: db-dumps/mycoolsite_db.sql # takes a relative file path inside the docroot directory
       img_proxy: false # img_proxy takes a live site's domain e.g mycoolsite.com (no http:// or trailing /)
       wp_version: latest
       wp_type: single
