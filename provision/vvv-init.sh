@@ -81,6 +81,7 @@ if ! $(noroot wp core is-installed); then
 
   # if we have a sql dump file try to import it into database
   if [[ -f "${DB_FILE}" ]]; then
+    noroot wp db --yes
     noroot wp db import "${DB_FILE}"
     noroot wp search-replace "${VVV_SITE_NAME}.com" "${DOMAIN}"
   fi
