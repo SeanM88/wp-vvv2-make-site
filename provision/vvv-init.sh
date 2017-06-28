@@ -17,7 +17,12 @@ DB_FILE=$(get_config_value 'db_file' "${DOC_ROOT}/db-dumps/${DB_NAME}.sql")
 IMG_PROXY=$(get_config_value 'img_proxy' false)
 WP_VERSION=$(get_config_value 'wp_version' 'latest')
 WP_TYPE=$(get_config_value 'wp_type' 'single')
+# A couple more useful variables
 SITE_PROVISION="${VVV_PATH_TO_SITE}/provision"
+LIVE_SITE=$(get_config_value 'img_proxy' "${VVV_SITE_NAME}.com")
+LIVE_SITE="${LIVE_SITE#*://}"
+LIVE_SITE="${LIVE_SITE/www\.}"
+LIVE_SITE="${LIVE_SITE%%/*}"
 
 # 2. - Make a database, if we don't already have one
 echo -e "\nCreating database '${DB_NAME}' (if it's not already there)"
@@ -91,9 +96,9 @@ if ! $(noroot wp core is-installed); then
     noroot wp db reset --yes
     echo -e "\nImporting '${DB_FILE}' into ${DB_NAME}"
     noroot wp db import "${DB_FILE}"
-    echo -e "\nReplacing all references to '${VVV_SITE_NAME}.com' with '${DOMAIN}' if possible"
-    noroot wp search-replace "${VVV_SITE_NAME}.com" "${DOMAIN}"
-    
+    echo -e "\nReplacing all references to '${LIVE_SITE}' with '${DOMAIN}' if possible"
+    noroot wp search-replace "${LIVE_SITE}" "${DOMAIN}" --skip-columns=guid
+
     # -- Using bash mysql commands (to do)--
     #echo -e "\nRemoving '${DB_NAME}' (if it exists) and recreating it empty for DB import"
     #mysql -u root --password=root -e "DROP DATABASE IF EXISTS ${DB_NAME}"
@@ -116,11 +121,11 @@ if [[ false != "${IMG_PROXY}" ]]; then
   cp -f "${SITE_PROVISION}/vvv-nginx.conf.img-proxy.tmpl" "${SITE_PROVISION}/vvv-nginx.conf"
   sed -i "s#{{DOMAINS_HERE}}#${DOMAINS}#" "${SITE_PROVISION}/vvv-nginx.conf"
   # Strip IMG_PROXY url to only domain (no http:// or trailing slash)
-  IMG_PROXY=${IMG_PROXY#*//}
-  IMG_PROXY=${IMG_PROXY%%/*}
-  echo -e "\nSetting up live site: '${IMG_PROXY}' as image proxy for local dev site."
+  #IMG_PROXY=${IMG_PROXY#*//}
+  #IMG_PROXY=${IMG_PROXY%%/*}
+  echo -e "\nSetting up live site: '${LIVE_SITE}' as image proxy for local dev site."
   # add config handler for live site's domain
-  sed -i "s#{{LIVE_URL}}#${IMG_PROXY}#" "${SITE_PROVISION}/vvv-nginx.conf"
+  sed -i "s#{{LIVE_URL}}#${LIVE_SITE}#" "${SITE_PROVISION}/vvv-nginx.conf"
 else
   cp -f "${SITE_PROVISION}/vvv-nginx.conf.tmpl" "${SITE_PROVISION}/vvv-nginx.conf"
   sed -i "s#{{DOMAINS_HERE}}#${DOMAINS}#" "${SITE_PROVISION}/vvv-nginx.conf"
