@@ -1,1 +1,3 @@
 path: public_html
+skip-plugins:
+ - simplemap
