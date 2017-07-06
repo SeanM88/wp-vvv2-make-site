@@ -87,6 +87,9 @@ if ! $(noroot wp core is-installed); then
   noroot wp core ${INSTALL_COMMAND} --url="${DOMAIN}" --quiet --title="${SITE_TITLE}" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 
   # 7.3 - Database import - if we have provided a sql dump file, try to import it into database
+  if [[ -f "${DB_FILE}.zip" ]]; then
+    tar -xf "${DB_FILE}.zip"
+  fi
   if [[ -f "${DB_FILE}" ]]; then
 
     # 7.3.1 - If we're importing a DB, drop any existing and import new one in place
