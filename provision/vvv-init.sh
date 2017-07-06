@@ -101,6 +101,7 @@ if ! $(noroot wp core is-installed); then
     noroot wp db import "${DB_FILE}"
     echo -e "\nReplacing all references to '${LIVE_SITE}' with '${DOMAIN}' if possible"
     noroot wp search-replace "${LIVE_SITE}" "${DOMAIN}" --skip-columns=guid
+    noroot wp search-replace "www.${DOMAIN}" "${DOMAIN}" --skip-columns=guid
 
     # -- Using bash mysql commands (to do)--
     #echo -e "\nRemoving '${DB_NAME}' (if it exists) and recreating it empty for DB import"
