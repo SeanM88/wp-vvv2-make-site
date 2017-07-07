@@ -50,13 +50,13 @@ else
     rm -rf "${DOC_ROOT}"
     # Clone site_repo into new DOC_ROOT directory
     echo -e "\nCloning '${SITE_REPO}' into fresh '${DOC_ROOT}'"
-    #git clone ${SITE_REPO} ${DOC_ROOT}
     # No try/catch in bash but close enough
     (git clone "${SITE_REPO}" "${DOC_ROOT}" && echo "Successfully imported '${SITE_REPO}'") || echo 'ERROR: Could not clone target URL, check site_repo setting in vvv-custom.yml for any mistakes.'
-    # If we have a sql dump file, copy it to the /database/backups directory for import
-    #if [[ -f "${DB_FILE}" ]]; then
-    #  cp "${DB_FILE}" "${DB_BACKUPS}/${DB_NAME}.sql"
-    #fi
+    # If we have site specific WP-CLI config file, copy it to site directory
+    if [[ -f "${DOC_ROOT}/wp-cli.local.yml" ]]; then
+      cp "${DOC_ROOT}/wp-cli.local.yml" "${VVV_PATH_TO_SITE}"
+      echo -e "\nCopied local WP-CLI config file to install site directory"
+    fi
   fi
 fi
 
