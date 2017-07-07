@@ -52,7 +52,7 @@ else
     echo -e "\nCloning '${SITE_REPO}' into fresh '${DOC_ROOT}'"
     # No try/catch in bash but close enough
     (git clone "${SITE_REPO}" "${DOC_ROOT}" && echo "Successfully imported '${SITE_REPO}'") || echo 'ERROR: Could not clone target URL, check site_repo setting in vvv-custom.yml for any mistakes.'
-    # If we have site specific WP-CLI config file, copy it to site directory
+    # If we have site specific WP-CLI config file, copy it to site directory, will override wp-cli.yml 
     if [[ -f "${DOC_ROOT}/wp-cli.local.yml" ]]; then
       cp "${DOC_ROOT}/wp-cli.local.yml" "${VVV_PATH_TO_SITE}"
       echo -e "\nCopied local WP-CLI config file to install site directory"
@@ -103,6 +103,7 @@ if ! $(noroot wp core is-installed); then
     noroot wp db import "${DB_FILE}"
     echo -e "\nReplacing all references to '${LIVE_SITE}' with '${DOMAIN}' if possible"
     noroot wp search-replace "${LIVE_SITE}" "${DOMAIN}" --skip-columns=guid
+    echo -e "\nReplacing all references to 'www.${DOMAIN}' with '${DOMAIN}' if possible"
     noroot wp search-replace "www.${DOMAIN}" "${DOMAIN}" --skip-columns=guid
 
     # -- Using bash mysql commands (to do)--
