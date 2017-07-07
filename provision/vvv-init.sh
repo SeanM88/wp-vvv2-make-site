@@ -86,13 +86,15 @@ if ! $(noroot wp core is-installed); then
   # 7.2 - Run actual WordPress install command with WP-CLI
   noroot wp core ${INSTALL_COMMAND} --url="${DOMAIN}" --quiet --title="${SITE_TITLE}" --admin_name=admin --admin_email="admin@local.dev" --admin_password="password"
 
-  # 7.3 - Database import - if we have provided a sql dump file, try to import it into database
-  if [[ -f "${DB_FILE}.zip" ]]; then
-    tar -xf "${DB_FILE}.zip"
-  fi
+  # 7.3 - DB file prep - large DB files could be stored as tarballs, if so extract to same location
+  for dbdump in ${DOC_ROOT}/db-dumps/*.tar.gz; do
+    [ -f "${dbdump}" ] || continue
+    tar -zxf "${dbdump}" -C "${DOC_ROOT}/db-dumps/"
+  done
+  # 7.4 - Database import - if we have provided a sql dump file, try to import it into database
   if [[ -f "${DB_FILE}" ]]; then
 
-    # 7.3.1 - If we're importing a DB, drop any existing and import new one in place
+    # 7.4.1 - If we're importing a DB, drop any existing and import new one in place
 
     # -- Using WP-CLI commands --
     echo -e "\nRemoving '${DB_NAME}' (if it exists) and recreating it empty for DB import"
@@ -114,7 +116,7 @@ if ! $(noroot wp core is-installed); then
   fi
 
 else
-  # 7.4 - If we already have WordPress installed, just see if update is needed.
+  # 7.5 - If we already have WordPress installed, just see if update is needed.
   echo "Updating WordPress Stable..."
   cd ${DOC_ROOT}
   noroot wp core update --version="${WP_VERSION}"
