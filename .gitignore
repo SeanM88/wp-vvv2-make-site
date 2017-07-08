@@ -50,5 +50,8 @@ Thumbs.db
 /provision/vvv-nginx.conf
 /public_html
 
+# ignore custom site specific local WP-CLI config files
+wp-cli.local.yml
+
 # include .gitkeep files for tracking empty directories
 !.gitkeep
